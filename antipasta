@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symmetric Encryption</title>
+</head>
+<body>
+    <h1>Symmetric Encryption</h1>
+    <label for="input">Enter Text:</label>
+    <textarea id="input" rows="4" cols="50"></textarea>
+    <br>
+    <label for="key">Enter Key:</label>
+    <input type="text" id="key">
+    <br>
+    <button onclick="encrypt()">Encrypt</button>
+    <button onclick="decrypt()">Decrypt</button>
+    <br>
+    <label for="output">Result:</label>
+    <textarea id="output" rows="4" cols="50" readonly></textarea>
+
+    <script>
+        function encrypt() {
+            var inputText = document.getElementById("input").value;
+            var key = document.getElementById("key").value;
+            var encryptedText = "";
+            for (var i = 0; i < inputText.length; i++) {
+                encryptedText += String.fromCharCode(inputText.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            document.getElementById("output").value = encryptedText;
+        }
+
+        function decrypt() {
+            var encryptedText = document.getElementById("input").value;
+            var key = document.getElementById("key").value;
+            var decryptedText = "";
+            for (var i = 0; i < encryptedText.length; i++) {
+                decryptedText += String.fromCharCode(encryptedText.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            document.getElementById("output").value = decryptedText;
+        }
+    </script>
+</body>
+</html>
