@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0c1118" />
+  <meta name="description" content="An interactive visual catalogue of a private perfume collection." />
+  <title>The Fragrance Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#0c1118;--surface:#151b24;--surface2:#1b2430;--line:#2d3542;--ink:#f4f3ee;--muted:#a5adb8;--gold:#d3b789;--gold2:#e9d7b3;--radius:18px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 77% -16%,#303027 0,transparent 32%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}a:hover{text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:3px}::selection{background:#aa8455;color:#111}
+    .shell{width:min(1320px,calc(100% - 56px));margin:auto}
+    header{padding:42px 0 26px;border-bottom:1px solid #ffffff11}.topline{display:flex;justify-content:space-between;align-items:center;gap:20px}.brandmark{display:flex;align-items:center;gap:11px;font-size:12px;text-transform:uppercase;letter-spacing:.2em;color:var(--gold)}.gem{width:24px;height:24px;border:1.4px solid var(--gold);transform:rotate(45deg);display:grid;place-items:center;border-radius:5px}.gem:after{content:"";width:9px;height:9px;border:1px solid var(--gold);border-radius:50%}.dateline{color:#8e98a4;font-size:12px}.eyebrow{margin:43px 0 9px;color:var(--gold);font-size:12px;text-transform:uppercase;letter-spacing:.24em;font-weight:700}.hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.056em;font-size:clamp(40px,7vw,82px);margin:0;line-height:1.13}.hero h1 em{font-weight:400;color:var(--gold);font-style:italic}.subtitle{max-width:640px;color:var(--muted);font-size:15px;margin:20px 0 24px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:29px 0 36px}.stat{border:1px solid var(--line);border-radius:13px;padding:18px 22px;background:#ffffff04}.stat .number{font-family:Georgia,serif;font-size:clamp(24px,3.1vw,36px);line-height:1.15;letter-spacing:-.03em}.stat .label{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:#9ca6b1;margin-top:9px}.stat:nth-child(3) .number{color:var(--gold)}
+    .toolbar{position:sticky;top:0;z-index:30;padding:13px 0;background:#0c1118ed;backdrop-filter:blur(20px);border-bottom:1px solid #ffffff11}.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.searchwrap{position:relative;flex:1 1 280px;max-width:420px}.searchwrap svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#a4acb5;pointer-events:none}.control{appearance:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;min-height:43px}.searchwrap .control{width:100%;padding-left:41px}.control::placeholder{color:#828d9a}.control option{background:#151b24;color:#fff}.seg{display:flex;margin-left:auto;border:1px solid var(--line);border-radius:10px;padding:3px;background:#151b24}.seg button{border:0;background:transparent;color:var(--muted);padding:8px 11px;border-radius:7px;font-size:12px}.seg button.active{background:#343a43;color:var(--ink)}
+    .sectionbar{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin:30px 0 18px}.sectiontitle{font-family:Georgia,serif;font-size:29px;font-weight:400;margin:0}.resultcount{font-size:12px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:60px}.card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,#1a202a 0,#141b24 65%);overflow:hidden;min-width:0;box-shadow:0 16px 32px #00000017;transition:border-color .2s, transform .2s}.card:hover{border-color:#6c6458;transform:translateY(-2px)}.cover{height:250px;background:#eeeae3;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}.cover img{width:100%;height:100%;object-fit:contain;display:block;mix-blend-mode:multiply;transition:transform .4s}.card:hover .cover img{transform:scale(1.035)}.cover .image-fallback{display:none;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,#ede4d4,#c4c0b7);align-items:center;justify-content:center;flex-direction:column;color:#454442;text-align:center;padding:16px}.image-fallback span{font-family:Georgia,serif;font-size:50px;line-height:1}.image-fallback small{font-size:11px;opacity:.72;margin-top:7px}.cover.photo-broken img{display:none}.cover.photo-broken .image-fallback{display:flex}.kind{position:absolute;left:12px;top:12px;background:#101923e6;border:1px solid #ffffff16;color:#eee4cf;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.045em;padding:6px 10px;z-index:1;backdrop-filter:blur(8px)}.kind.tester{color:#efcfb3}.kind.mini{color:#d9e5fc}.body{padding:18px 17px 15px}.house{text-transform:uppercase;letter-spacing:.13em;color:var(--gold);font-size:10px;font-weight:800;line-height:1.4;min-height:15px}.name{font-family:Georgia,serif;font-size:21px;letter-spacing:-.025em;line-height:1.22;min-height:51px;margin:8px 0 17px;overflow-wrap:anywhere}.facts{display:flex;justify-content:space-between;gap:9px;align-items:end;border-top:1px solid var(--line);padding-top:13px}.volume{font-size:13px;color:#aeb9c4}.price{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}.body-actions{margin-top:15px;display:grid;grid-template-columns:1fr auto;gap:8px}.buy{border:1px solid #c5a77d;background:var(--gold);color:#171918;border-radius:9px;display:grid;place-items:center;min-height:41px;padding:10px 12px;font-weight:750;font-size:12px;transition:background .2s}.buy:hover{background:var(--gold2)}.details-btn{background:#242d38;color:#e0e5eb;border:1px solid #38424d;border-radius:9px;padding:0 14px;font-size:12px;min-height:41px}.details-btn[aria-expanded="true"]{background:#3b342e;border-color:#826a4a}.details{border-top:1px solid var(--line);padding:14px 17px 18px;color:#bbc2cc;font-size:12px;animation:slide .18s ease-out}.details[hidden]{display:none}.details p{margin:0 0 13px;line-height:1.6}.meta{display:grid;grid-template-columns:85px 1fr;gap:7px 8px;margin:0}.meta dt{color:#8e99a5}.meta dd{margin:0;color:#e0e5ec;overflow-wrap:anywhere}.meta a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}.note{margin-top:13px;border-left:2px solid #9b825d;padding-left:10px;color:#c5c8cd}.pricehint{font-size:10px;color:#b9a78b;margin-top:3px}.nothing{grid-column:1/-1;border:1px dashed #3e4853;border-radius:16px;padding:55px 16px;text-align:center;color:var(--muted)}.nothing strong{display:block;color:var(--ink);font-size:18px;margin-bottom:7px}.footer{padding:25px 0 50px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;font-size:12px;color:#8c98a5}.footer b{color:#c8ad88;font-weight:500}@keyframes slide{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .grid.list{grid-template-columns:1fr;gap:9px}.grid.list .card{display:grid;grid-template-columns:106px minmax(0,1fr);position:relative}.grid.list .cover{height:100%;min-height:119px}.grid.list .kind{font-size:8px;top:6px;left:6px;padding:4px 6px}.grid.list .body{padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:25px;align-items:center}.grid.list .house,.grid.list .name{grid-column:1}.grid.list .name{margin:3px 0 0;min-height:0;font-size:20px}.grid.list .facts{grid-column:2;grid-row:1/3;border:0;padding:0;gap:24px}.grid.list .body-actions{grid-column:1/-1;margin-top:12px;max-width:360px}.grid.list .details{grid-column:2}.grid.list .cover img{object-fit:contain}
+    @media(max-width:1090px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.cover{height:245px}}
+    @media(max-width:760px){.shell{width:min(100% - 30px,650px)}header{padding-top:25px}.hero h1{font-size:51px}.eyebrow{margin-top:32px}.summary{grid-template-columns:1fr 1fr;gap:9px}.stat{padding:16px}.controls{gap:8px}.searchwrap{max-width:none;flex-basis:100%}.controls select{flex:1}.seg{margin-left:0}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.cover{height:204px}.body{padding:14px 13px 12px}.name{font-size:19px;min-height:48px}.price{font-size:17px}.body-actions{grid-template-columns:1fr}.details-btn{min-height:36px}.grid.list .body{display:block}.grid.list .facts{border-top:1px solid var(--line);padding-top:8px;margin-top:9px}.grid.list .body-actions{display:flex}.grid.list .details{grid-column:1/-1}}
+    @media(max-width:420px){.cover{height:165px}.kind{top:7px;left:7px;padding:4px 6px;font-size:9px}.body{padding:12px 11px}.name{font-size:17px}.facts{align-items:center}.price{font-size:15px}.volume{font-size:12px}.hero h1{font-size:43px}.summary .stat .number{font-size:25px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+    /* 2026 edit — bold geometric typography + premium filtering interface */
+    body{font-family:"Manrope",Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:500}
+    .hero h1,.sectiontitle,.stat .number,.name,.image-fallback span{
+      font-family:"Manrope",ui-sans-serif,system-ui,sans-serif;font-style:normal}
+    .hero h1{font-weight:800;letter-spacing:-.072em;line-height:1.05;font-size:clamp(41px,7vw,80px)}
+    .hero h1 em{font-weight:800;font-style:normal;color:var(--gold)}
+    .sectiontitle{font-weight:800;letter-spacing:-.055em;font-size:30px}
+    .stat .number{font-weight:800;letter-spacing:-.065em}
+    .name{font-weight:800;letter-spacing:-.052em;font-size:20px;line-height:1.25}
+    .house,.brandmark,.eyebrow{font-weight:800}
+    .price{font-weight:800;letter-spacing:-.045em}
+    .toolbar{padding:13px 0 15px;background:#0c1118ee;border-bottom:1px solid #ffffff10}
+    .filter-panel{padding:16px 18px 14px;border:1px solid #404656;border-radius:18px;background:linear-gradient(130deg,#1e2834 0%,#171e28 50%,#151b24 100%);box-shadow:0 14px 46px #0006, inset 0 1px #ffffff0c}
+    .filter-panel-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:0 1px 13px}
+    .filter-caption{font-size:10px;font-weight:800;letter-spacing:.19em;color:#f0d5a8;display:inline-flex;gap:8px;align-items:center}
+    .filter-spark{font-size:16px;line-height:.7;color:#dbbd92}
+    .filter-hint{font-size:11px;color:#a5afbc;font-weight:600}
+    .filter-primary{display:flex;align-items:end;gap:10px}
+    .searchwrap{flex:1 1 auto;max-width:none;min-width:185px}
+    .control{border-radius:11px;background:#0e151e;color:#edf1f4;border:1px solid #424d5b;font-weight:650;min-height:45px;transition:border-color .17s,background .17s,box-shadow .17s}
+    .control:hover{border-color:#88785f}
+    .control:focus{border-color:#d3b789;box-shadow:0 0 0 3px #d3b78923;outline:none}
+    .searchwrap .control{background:#0e151e;font-weight:600}
+    .searchwrap .control::placeholder{color:#818f9f}
+    .sortwrap{display:flex;align-items:center;gap:10px;min-width:244px}
+    .sortwrap select{width:220px;padding-right:28px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23d3b789' stroke-width='1.8'/%3E%3C/svg%3E");background-position:right 12px center;background-repeat:no-repeat}
+    .filter-fieldlabel{flex:none;font-size:10px;font-weight:800;letter-spacing:.13em;color:#abb3c0}
+    .seg{margin-left:0;background:#0e151e;border-color:#424d5b;border-radius:11px;min-height:45px;display:flex;align-items:stretch;padding:4px}
+    .seg button{font-weight:800;padding:8px 13px;border-radius:8px;white-space:nowrap}
+    .seg button.active{background:#c8ad85;color:#141b23;box-shadow:0 1px 9px #0004}
+    .filter-secondary{display:flex;align-items:center;gap:17px;margin-top:13px;padding-top:13px;border-top:1px solid #ffffff13}
+    .filter-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .filter-chip{background:#111a24;border:1px solid #3c4654;color:#c6cfda;padding:7px 12px;border-radius:100px;font-size:11px;font-weight:800;white-space:nowrap;transition:background .18s,border-color .18s,color .18s,transform .18s}
+    .filter-chip:hover{border-color:#d4b98b;color:#f3e5cc;transform:translateY(-1px)}
+    .filter-chip.active{background:#d5b98f;border-color:#e7ca9e;color:#14191f;box-shadow:0 3px 12px #d5b98f26}
+    .chip-count{display:inline-block;margin-left:7px;min-width:17px;line-height:18px;text-align:center;border-radius:20px;padding:0 5px;background:#ffffff14;color:#d8deeb;font-size:10px;font-variant-numeric:tabular-nums}
+    .filter-chip.active .chip-count{background:#14191f20;color:#171a1d}
+    .kind{font-weight:800}.kind.mini{color:#dbe8ff}
+    .image-fallback{font-weight:800}.image-fallback span{font-weight:800;color:#7a6d5a}
+    .grid.list .name{font-size:20px}
+    @media(max-width:960px){.filter-primary{flex-wrap:wrap}.searchwrap{flex:1 1 100%}.sortwrap{flex:1 1 auto}.sortwrap select{flex:1;max-width:none}.seg{margin-left:auto}}
+    @media(max-width:760px){.filter-panel{padding:13px 12px;border-radius:13px}.filter-hint{display:none}.filter-panel-top{margin-bottom:11px}.filter-primary{gap:8px}.sortwrap{min-width:0;flex:1 1 220px}.sortwrap .filter-fieldlabel{display:none}.sortwrap select{width:100%;max-width:none}.seg{flex:0 0 auto}.filter-secondary{display:block;margin-top:12px;padding-top:12px}.filter-secondary>.filter-fieldlabel{display:block;margin-bottom:8px}.filter-chips{gap:7px}.filter-chip{padding:8px 10px;font-size:10px}.hero h1{font-size:clamp(40px,9vw,58px)}.name{font-size:19px}}
+    @media(max-width:430px){.seg{width:100%;justify-content:center}.seg button{flex:1}.filter-chip{padding:8px 9px}.filter-chips{gap:6px}.filter-chip .chip-count{margin-left:4px}.hero h1{font-size:42px}.name{font-size:17px}}
+  
+    /* Fragrance concentration: one consistent, full-text label on every card. */
+    .concentration{font-family:Manrope,ui-sans-serif,sans-serif;font-size:10px;line-height:1.35;letter-spacing:.11em;text-transform:uppercase;font-weight:800;color:#9bafbb;margin:-10px 0 17px;min-height:14px}
+    .grid.list .concentration{grid-column:1;margin:5px 0 0}
+    .grid.list .facts{grid-row:1/4}
+    .cover{cursor:zoom-in}
+    .cover:focus-visible{outline:3px solid #d3b789;outline-offset:-3px}
+    .zoom-icon{position:absolute;z-index:2;right:11px;bottom:10px;border:1px solid #f3f0e9aa;box-shadow:0 2px 12px #00000025;border-radius:9px;padding:6px 9px;background:#1a212bca;color:#fff;font:800 11px/1 Manrope,sans-serif;letter-spacing:.01em;transition:background .2s}
+    .cover:hover .zoom-icon{background:#1a212bf3}
+    .cover.photo-broken{cursor:default}.cover.photo-broken .zoom-icon{display:none}
+    .price-statusbar{margin-top:12px;padding:10px 12px;background:#ffffff05;border:1px solid #ffffff12;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .price-statusbar .status-left{display:flex;align-items:center;gap:10px;min-width:0}
+    .price-led{width:7px;height:7px;background:#8c99a6;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px #8998ab18}
+    .price-statusbar.checking .price-led{background:#d3b789;box-shadow:0 0 0 3px #d3b78922;animation:blink 1.25s infinite}
+    .price-statusbar.current .price-led{background:#8ecdb0;box-shadow:0 0 0 3px #8ecdb022}
+    .price-status{font-size:11px;font-weight:700;color:#b4bdc7}
+    .refresh-price{border:1px solid #655741;color:#ead8b8;background:#2e2a25;border-radius:8px;padding:7px 12px;min-height:31px;font-size:11px;font-weight:800;transition:background .2s}
+    .refresh-price:hover:not(:disabled){background:#483a2e}.refresh-price:disabled{opacity:.45;cursor:default}
+    .price-live{font-size:10px;letter-spacing:.05em;color:#8ecdb0;font-weight:800;margin-top:4px}
+    .photo-modal[hidden]{display:none}
+    .photo-modal{position:fixed;inset:0;z-index:999;display:grid;place-items:center;padding:24px;background:#04070bd9;backdrop-filter:blur(9px);animation:fadein .18s ease-out}
+    .photo-modal-inner{width:min(750px,100%);max-height:calc(100dvh - 45px);display:flex;flex-direction:column;position:relative;border:1px solid #4b4d4f;border-radius:20px;overflow:hidden;background:#141c25;box-shadow:0 35px 130px #000b}
+    .photo-modal-top{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 22px;border-bottom:1px solid #ffffff1a}
+    .photo-modal-title{margin:0;font:800 17px/1.2 Manrope,ui-sans-serif,sans-serif;letter-spacing:-.025em}
+    .photo-modal-sub{margin-top:5px;font:700 11px/1.35 Manrope,sans-serif;color:#a6b4c1}
+    .modal-close{color:#fff;background:#2c3642;border:1px solid #526070;border-radius:10px;width:38px;height:38px;display:grid;place-items:center;font-size:23px;line-height:1}
+    .modal-photo-wrap{background:#f1eee8;display:flex;justify-content:center;align-items:center;min-height:180px;overflow:auto}
+    .modal-photo{display:block;max-width:100%;max-height:calc(100dvh - 180px);min-height:180px;width:auto;height:auto;object-fit:contain}
+    .photo-modal-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 22px;font:700 11px/1.35 Manrope,sans-serif;color:#a7b4c0}
+    .photo-modal-bottom a{color:#e2c594;text-decoration:underline;text-underline-offset:3px}
+    @keyframes fadein{from{opacity:0}to{opacity:1}}@keyframes blink{50%{opacity:.3}}
+    @media(max-width:760px){.concentration{margin:-8px 0 13px;font-size:9px}.price-statusbar{margin-top:10px}.photo-modal{padding:12px}.photo-modal-top,.photo-modal-bottom{padding:14px}.photo-modal-title{font-size:15px}.photo-modal-inner{max-height:calc(100dvh - 24px)}.modal-photo{max-height:calc(100dvh - 155px)}}
+    /* Collapsible filter toolbar — slim sticky ribbon when tucked away. */
+    .toolbar{transition:padding .18s ease,background .18s ease}
+    .toolbar.is-compact{padding:7px 0 8px}
+    .filter-panel{transition:padding .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .filter-panel.is-collapsed{padding:8px 13px;border-color:#4a4a49;background:linear-gradient(105deg,#212b36,#171f28);box-shadow:0 5px 18px #0004}
+    .filter-panel.is-collapsed .filter-panel-top{margin-bottom:0;min-height:34px}
+    .filter-panel-top{align-items:center}
+    .filter-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;min-width:0}
+    .filter-compact-info{display:none;color:#b6c0ce;font-size:11px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .filter-panel.is-collapsed .filter-compact-info{display:inline-block}
+    .filter-panel.is-collapsed .filter-hint{display:none}
+    .filter-content[hidden]{display:none!important}
+    .filter-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;border:1px solid #827054;background:linear-gradient(180deg,#302c29,#252725);color:#e9d4b0;border-radius:9px;font:800 11px/1 Manrope,system-ui,sans-serif;letter-spacing:.01em;padding:10px 13px;min-height:35px;transition:color .18s,background .18s,border-color .18s}
+    .filter-toggle:hover{background:#433729;border-color:#d3b789;color:#fff0d1}
+    .filter-chevron{transform:rotate(180deg);transition:transform .2s ease}
+    .filter-panel.is-collapsed .filter-chevron{transform:rotate(0deg)}
+    @media(max-width:760px){
+      .filter-panel.is-collapsed{padding:7px 10px}
+      .filter-panel.is-collapsed .filter-panel-top{min-height:36px}
+      .filter-head-actions{gap:8px}
+      .filter-compact-info{font-size:10px;max-width:112px}
+      .filter-toggle{padding:10px 9px;min-height:34px;font-size:10px;gap:5px}
+      .filter-caption{letter-spacing:.12em;font-size:9px;white-space:nowrap}
+    }
+    @media(max-width:395px){.filter-compact-info{display:none!important}.filter-panel-top{gap:6px}}
+
+  </style>
+</head>
+<body>
+  <header><div class="shell"><div class="topline"><div class="brandmark"><span class="gem" aria-hidden="true"></span> PRIVATE COLLECTION / NO. 01</div><span class="dateline">CATALOGUE · NOV 2026</span></div>
+  <div class="hero"><div class="eyebrow">A personal fragrance collection</div><h1>The Fragrance <em>Archive.</em></h1><p class="subtitle">Every bottle, every miniature, every story. Explore the collection, compare sizes and values, and find a shop listing for each fragrance.</p></div>
+  <div class="summary"><div class="stat"><div class="number" id="statCount">42</div><div class="label">Fragrances</div></div><div class="stat"><div class="number" id="statVolume">2,488.5 ml</div><div class="label">Bottle capacity</div></div><div class="stat"><div class="number" id="statValue">₴218,751</div><div class="label">Estimated value</div></div><div class="stat"><div class="number" id="statMini">12</div><div class="label">Official miniatures</div></div></div></div></header>
+  <div class="toolbar is-compact"><div class="shell"><div class="filter-panel is-collapsed" id="filterPanel">
+      <div class="filter-panel-top">
+        <span class="filter-caption"><span class="filter-spark">✳</span> EXPLORE THE ARCHIVE</span>
+        <div class="filter-head-actions">
+          <span class="filter-hint">Find a bottle in your collection</span>
+          <span class="filter-compact-info" id="filterCompactInfo" aria-live="polite">42 fragrances · All presentations</span>
+          <button class="filter-toggle" type="button" id="filterToggle" aria-controls="filterContent" aria-expanded="false" title="Expand or collapse search, sorting and presentation filters">
+            <span id="filterToggleLabel">Show filters</span>
+            <svg class="filter-chevron" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="filterContent" class="filter-content" hidden>
+      <div class="filter-primary">
+        <label class="searchwrap" aria-label="Search fragrances"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input class="control" type="search" id="search" placeholder="Search by house, fragrance or notes…" autocomplete="off" /></label>
+        <label class="sortwrap"><span class="filter-fieldlabel">SORT BY</span><select id="sort" class="control" aria-label="Sort fragrances"><option value="priceDesc">Price · high to low</option><option value="priceAsc">Price · low to high</option><option value="name">Name · A–Z</option><option value="sizeDesc">Volume · high to low</option><option value="unitDesc">Price/ml · high to low</option></select></label>
+        <div class="seg" role="group" aria-label="Change display"><button type="button" id="gridBtn" class="active" aria-label="Grid view" aria-pressed="true">▦ Grid</button><button type="button" id="listBtn" aria-label="List view" aria-pressed="false">☷ List</button></div>
+      </div>
+      <div class="filter-secondary"><span class="filter-fieldlabel">PRESENTATION</span><div class="filter-chips" role="group" aria-label="Filter by presentation">
+        <button type="button" class="filter-chip active" data-kind="all" aria-pressed="true">All fragrances <span class="chip-count">42</span></button>
+        <button type="button" class="filter-chip" data-kind="bottle" aria-pressed="false">Official bottles <span class="chip-count">29</span></button>
+        <button type="button" class="filter-chip" data-kind="mini" aria-pressed="false">Official miniatures <span class="chip-count">12</span></button>
+        <button type="button" class="filter-chip" data-kind="tester" aria-pressed="false">Tester bottles <span class="chip-count">1</span></button>
+      </div></div>
+      <select id="kindFilter" aria-label="Current presentation filter" hidden><option value="all">All fragrances</option><option value="bottle">Official bottles</option><option value="mini">Official miniatures</option><option value="tester">Tester bottles</option></select>
+    <div class="price-statusbar" id="priceStatusBar"><div class="status-left"><i class="price-led" aria-hidden="true"></i><span class="price-status" id="priceStatus" role="status" aria-live="polite">Reference prices · live update service not connected</span></div><button type="button" class="refresh-price" id="refreshPrices" title="Check retailer prices again">↻ Check prices</button></div>
+      </div>
+    </div></div></div>
+  <main class="shell"><div class="sectionbar"><h2 class="sectiontitle">The collection</h2><span class="resultcount" id="countText" aria-live="polite">42 fragrances</span></div><div id="collection" class="grid" aria-live="polite"></div></main>
+  <footer class="shell footer"><span>Designed as a personal catalogue. <b>Prices are indicative replacement values</b>, not live retailer quotes. Shop availability may change.</span><span>Bottle photos try multiple image sources automatically. Internet is required for photographs.</span></footer>
+
+  <div class="photo-modal" id="photoModal" role="dialog" aria-modal="true" aria-labelledby="photoModalTitle" hidden>
+    <div class="photo-modal-inner">
+      <div class="photo-modal-top"><div><h2 id="photoModalTitle" class="photo-modal-title"></h2><div class="photo-modal-sub" id="photoModalSub"></div></div><button class="modal-close" id="photoModalClose" type="button" aria-label="Close large photo">×</button></div>
+      <div class="modal-photo-wrap"><img class="modal-photo" id="photoModalImg" alt="Enlarged fragrance bottle photograph"></div>
+      <div class="photo-modal-bottom"><span>Click outside or press Esc to close</span><a id="photoModalSource" href="#" target="_blank" rel="noopener noreferrer">Photo source ↗</a></div>
+    </div>
+  </div>
+  <script>
+  const perfumes = [{"id":"p01","brand":"Puredistance","name":"Black","ml":60,"price":25731,"kind":"bottle","source":"Elle Dnipro","buy":"https://elle.dp.ua/Puredistance.aspx","image":"https://davidoafnani.com/cdn/shop/products/05-puredistance-black-60ml-a_1200x1200.png?v=1514655392","description":"A dark, sophisticated extrait with a warm, quietly mysterious character.","photo_source":"https://davidoafnani.com/products/pd-black-perfume-17-5ml","note":"","type":"Extrait de Parfum"},{"id":"p02","brand":"Clive Christian","name":"Blonde Amber","ml":50,"price":22524,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/clive-christian-noble-xxi-art-deco-blonde-amber-duhi/","image":"https://valenciaperfumes.com/cdn/shop/files/IMG-6322.png?v=1775154233","description":"Opulent amber with tobacco, warm spice and a richly sweet tonka base.","photo_source":"https://valenciaperfumes.com/products/blonde-amber-by-clive-christian","note":"","images":["https://valenciaperfumes.com/cdn/shop/files/IMG-6322.png?v=1775154233","https://www.lajeteeperfumery.com/cdn/shop/files/CC-NB21P50F01_1_696X598_6ae2c9c7-2cc7-4c0e-92c7-80a464c3a6c8.webp?v=1692737032","https://perfumer.uz/image/cache/catalog/%D0%A3%D0%BD%D0%B8%D1%81%D0%B5%D0%BA%D1%81%20-%202026/Blonde%20Amber%20Clive%20Christian-1000x1000.jpg"],"type":"Parfum"},{"id":"p03","brand":"Clive Christian","name":"Out of the Blue","ml":50,"price":22243,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/clive-christian-strange-heavens-out-of-the-blue-duhi/","image":"https://valenciaperfumes.com/cdn/shop/files/IMG-9353.png?v=1779834249","description":"A distinctive, expressive luxury scent from the Strange Heavens collection.","photo_source":"https://valenciaperfumes.com/products/sin-nombre-10feb_14-06","note":"","images":["https://valenciaperfumes.com/cdn/shop/files/IMG-9353.png?v=1779834249","https://a-konzept.com/cdn/shop/files/clive-christian-strange-heavens-out-of-the-blue-eau-de-parfum-50ml-9777016.png?v=1771325416&width=1426"],"type":"Parfum"},{"id":"p04","brand":"Boadicea the Victorious","name":"Blue Sapphire","ml":100,"price":18946,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/boadicea-the-victorious-blue-sapphire-parfyumirovannaya-voda/","image":"https://theparfums.com/cdn/shop/files/product-bottles-BODICEA-BLUESAPPHIRE.png?v=1760306548&width=1100","description":"An extravagant, regal niche scent presented in an iconic sapphire-blue flacon.","photo_source":"https://theparfums.com/products/blue-sapphire","note":"","type":"Eau de Parfum"},{"id":"p05","brand":"Clive Christian","name":"Hedonistic","ml":50,"price":18099,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/clive-christian-jump-up-and-kiss-me-hedonistic-2021-duhi/","image":"https://theparfums.com/cdn/shop/files/product-bottles-CLIVE_CHRISTIAN-JUMP_HEDO.png?v=1762268730&width=1445","description":"A dramatic, indulgent composition from the Addictive Arts collection.","photo_source":"https://theparfums.com/products/jump-up-and-kiss-me-hedonistic","note":"","type":"Parfum"},{"id":"p06","brand":"Dior","name":"Ambre Nuit","ml":100,"price":12000,"kind":"bottle","source":"Estimate · Dior reference","buy":"https://www.dior.com/uk_ua/beauty/products/ambre-nuit-Y0958160.html","image":"https://www.dekantparfum.com.tr/idea/hs/04/myassets/products/046/dior-privee-ambre-nuit-10-ml-deluxe.jpg?revision=1770812962","description":"Soft rose and warm amber in an elegant, luminous balance.","photo_source":"https://www.dekantparfum.com.tr/","note":"Estimated value. Dior currently lists other retail sizes; verify your 100 ml presentation.","images":["https://www.dekantparfum.com.tr/idea/hs/04/myassets/products/046/dior-privee-ambre-nuit-10-ml-deluxe.jpg?revision=1770812962","https://www.smileperfumes.com/cdn/shop/products/ambre-box.jpg?v=1693334897","https://www.yamsm.ae/wp-content/uploads/2020/10/3348900006201b-1.jpg"],"type":"Eau de Parfum"},{"id":"p07","brand":"Pana Dora","name":"Oud Republic","ml":100,"price":11157,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/pana-dora-oud-republic-parfyumirovannaya-voda/","image":"https://www.venbafragrance.com/cdn/shop/files/AnthonyCologneSamples_57.png?format=webp&v=1775057032&width=1080","description":"A lavish oud-forward fragrance in the striking stag-capped bottle.","photo_source":"https://www.venbafragrance.com/products/pana-dora-oud-republic-edp","note":"","type":"Eau de Parfum"},{"id":"p08","brand":"Xerjoff","name":"Naxos","ml":100,"price":7464,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/xerjoff-xj-1861-naxos-parfyumirovannaya-voda/","image":"https://media.superpharm.eu/media/catalog/product/cache/07e643f7e64afe5b94f277b4a7389b28/c/1/c10e5521e043428db3a5db73a285cfcc.jpg","description":"Honeyed tobacco, lavender and vanilla with an unmistakable warmth.","photo_source":"https://www.superpharm.pl/xerjoff-naxos-woda-perfumowana-spray-100ml-m10890","note":"","type":"Eau de Parfum"},{"id":"p09","brand":"Orto Parisi","name":"Terroni","ml":50,"price":6052,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/orto-parisi/","image":"https://d3e7ardzpaj3y4.cloudfront.net/image/catalog/62232332_Orto%20Parisi%20Terroni%20-%20Parfum%20-%2050ml-500x500.png","description":"Smoky, earthy and volcanic in mood, with an intense resinous trail.","photo_source":"https://niceonesa.com/ar/orto-parisi-terroni-parfum-50ml-n8775","note":"","type":"Parfum"},{"id":"p10","brand":"Hormone Paris","name":"This Is Not Testosterone","ml":100,"price":5322,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/hormone-paris-this-is-not-testosterone-parfyumirovannaya-voda/","image":"https://ddlnhqzqkolahqjfjoat.supabase.co/storage/v1/object/public/parfume%20images/e2038f4d-9a72-4c18-8e34-9d94c0159098/primary-1765043579536.webp","description":"Contemporary woody-musk character with a clean, confident feel.","photo_source":"https://narffum.am/products/hormone-paris-this-is-not-testosterone","note":"","type":"Parfum"},{"id":"p11","brand":"Bvlgari","name":"Le Gemme Tygar","ml":30,"price":5122,"kind":"tester","source":"Reference price · LaGrande","buy":"https://lagrande.com.ua/ua/bvlgari-le-gemme-tygar-parfyumirovannaya-voda/","image":"https://ian.marieclaire.com.tw/assets/mc/202604/69D4A438C198D1775543352.png?format=jpg&t=auto&w=1200%2C675","description":"Radiant grapefruit over crisp modern amber woods.","photo_source":"https://www.marieclaire.com.tw/beauty/perfume-and-nails/92730","note":"30 ml tester. The picture shows the usual full-size design, not necessarily your tester packaging.","type":"Eau de Parfum"},{"id":"p12","brand":"Dior","name":"Sauvage EDT","ml":100,"price":5069,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/sauvage-2015-tualetnaya-voda/","image":"https://www.sephora.com.mx/on/demandware.static/-/Sites-masterCatalog_Sephora/es_MX/dwdefc1b76/images/hi-res/eau-de-toilette-dior-dior-sauvage-eau-de-toilette-100ml3348901250146A.jpg","description":"Fresh bergamot, spice and modern woody-amber brightness.","photo_source":"https://www.sephora.com.mx/products/dior-sauvage-eau-de-toilette-100ml-15756.html","note":"EDT assumed from the earlier inventory.","type":"Eau de Toilette"},{"id":"p13","brand":"Givenchy","name":"Gentleman Society EDP","ml":100,"price":5023,"kind":"bottle","source":"MyOriginal","buy":"https://myoriginal.com.ua/ua/product/givenchy-gentleman-society/","image":"https://www.beautyaffairs.com.au/cdn/shop/files/GivenchyGentlemanSocietyEDP-2.png?v=1721269689","description":"Modern aromatic woods with a smooth, elegant vetiver character.","photo_source":"https://www.beautyaffairs.com.au/products/givenchy-gentleman-society-edp","note":"","type":"Eau de Parfum"},{"id":"p14","brand":"Givenchy","name":"Gentleman Society Extrême","ml":100,"price":4231,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/givenchy-gentleman-society-extreme-parfyumirovannaya-voda/","image":"https://cosmetic.cl/cdn/shop/files/Perfume-Gentleman-Society-EDP-Extreme-100-ml-Givenchy_800x.png?v=1776893545","description":"The deeper, spicier interpretation of Gentleman Society.","photo_source":"https://cosmetic.cl/products/perfume-gentleman-society-edp-extreme-100-ml-givenchy","note":"Extrême edition assumed from the earlier inventory.","type":"Eau de Parfum"},{"id":"p15","brand":"Mancera","name":"Aoud Café","ml":120,"price":3550,"kind":"bottle","source":"Notino","buy":"https://www.notino.ua/mancera/aoud-cafe-parfumovana-voda-uniseks/","image":"https://beautyhouse.com/cdn/shop/files/010qyosdtv.png?v=1761170468&width=938","description":"An unusual blend of coffee, rose and creamy musk.","photo_source":"https://beautyhouse.com/collections/vendors?q=Mancera","note":"","type":"Eau de Parfum"},{"id":"p16","brand":"Carolina Herrera","name":"Bad Boy Elixir","ml":50,"price":3475,"kind":"bottle","source":"Notino","buy":"https://www.notino.ua/carolina-herrera/bad-boy-elixir-parfumovana-voda-dlja-cholovikiv/p-16284149/","image":"https://f.fcdn.app/imgs/db589a/www.sanroque.com.uy/sanruy/a8ca/original/catalogo/137566_137566_1/2000-2000/perfume-carolina-herrera-bad-boy-elixir-eau-de-parfum-50ml-perfume-carolina-herrera-bad-boy-elixir-eau-de-parfum-50ml.jpg","description":"Deep leather, sage and cedar in the striking lightning-bolt bottle.","photo_source":"https://www.sanroque.com.uy/catalogo/perfume-carolina-herrera-bad-boy-elixir-eau-de-parfum-50ml_137566_137566","note":"","type":"Eau de Parfum"},{"id":"p17","brand":"Dolce & Gabbana","name":"K Eau de Toilette","ml":100,"price":3039,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/dolce-gabbana-k-by-dolce-gabbana-tualetnaya-voda/","image":"https://media.sephora.eu/content/dam/gdam/europe/digital/pim/published/D/DOLCE___GABBANA/482599/118685-media_swatch.jpg?scaleHeight=750&scaleMode=fit&scaleWidth=750","description":"Fresh citrus and aromatic spice with a smooth woody finish.","photo_source":"https://www.sephora.it/p/k-by-dolceegabbana-482599.html","note":"EDT assumed from the earlier inventory.","type":"Eau de Toilette"},{"id":"p18","brand":"Roja","name":"Elysium Pour Homme","ml":10,"price":3000,"kind":"mini","source":"Reference price · travel","buy":"https://rojalondon.com/products/elysium-pour-homme-travel","image":"https://rojalondon.com/cdn/shop/files/elysium-pour-homme-travel-spray-roja-parfums-779547.jpg?v=1756741740","description":"Bright citrus, aromatic herbs and transparent woods; easygoing but polished.","photo_source":"https://rojalondon.com/products/elysium-pour-homme-travel","note":"10 ml assumed; exact Elysium version should be checked.","type":"Eau de Parfum"},{"id":"p19","brand":"Ex Nihilo","name":"The Hedonist Extrait","ml":7.5,"price":4158,"kind":"mini","source":"Elle Dnipro · Extrait","buy":"https://elle.dp.ua/Ex-Nihilo/The-Hedonist-Extrait-De-Parfum.aspx","image":"https://drbeauty.com.ua/image/cache/catalog/11parphum/ex%20nihilo%20extrax-1200x1200.png","description":"Grapefruit and lychee layered over powerful textured woods.","photo_source":"https://drbeauty.com.ua/ex-nihilo-the-hedonist---7-5-ml/","note":"Corrected to Extrait de Parfum — not the original EDP. Official travel bottle.","type":"Extrait de Parfum"},{"id":"p20","brand":"Maison Crivelli","name":"Oud Maracujá","ml":5,"price":2570,"kind":"mini","source":"Voenso · reference","buy":"https://www.perfumenichebar.com.ua/brend/maison-crivelli/","image":"https://parfumslubner.com/cdn/shop/files/Oud_Maracuja_100ml_RVB_AVION.png?v=1747276270&width=1946","description":"An explosive contrast of tropical passion fruit, dark oud and leather.","photo_source":"https://parfumslubner.com/products/oud-maracuja-extrait-de-parfum-50ml","note":"Miniature volume assumed; the photo shows the full-size bottle for reference.","type":"Extrait de Parfum"},{"id":"p21","brand":"Dior","name":"Ambre Nuit","ml":10,"price":2465,"kind":"mini","source":"Shafa · reference","buy":"https://shafa.ua/uk/cosmetics/parfyumeriya/probniki/205809051-parfumovana-voda-original-miniatyura-ambre-nuit-dior","image":"https://www.dekantparfum.com.tr/idea/hs/04/myassets/products/046/dior-privee-ambre-nuit-10-ml-deluxe.jpg?revision=1770812962","description":"A portable presentation of the soft rose-and-amber classic.","photo_source":"https://www.dekantparfum.com.tr/urun/dior-privee-ambre-nuit-10-ml-deluxe","note":"Miniature volume assumed; photograph represents the scent, not exact mini packaging.","images":["https://www.dekantparfum.com.tr/idea/hs/04/myassets/products/046/dior-privee-ambre-nuit-10-ml-deluxe.jpg?revision=1770812962","https://www.smileperfumes.com/cdn/shop/products/ambre-box.jpg?v=1693334897","https://www.yamsm.ae/wp-content/uploads/2020/10/3348900006201b-1.jpg"],"type":"Eau de Parfum"},{"id":"p22","brand":"Viktor & Rolf","name":"Spicebomb EDT","ml":50,"price":2039,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/spicebomb-tualetnaya-voda/","image":"https://escentual.com/cdn/shop/files/viktor_rolf_spicebomb_eau_de_toilette_spray_50ml_-_with_box.png?v=1729190654&width=1445","description":"An energetic burst of cinnamon, pepper, tobacco and warm woods.","photo_source":"https://escentual.com/products/viktor-rolf-spicebomb-eau-de-toilette-spray","note":"Original EDT assumed from the earlier inventory.","type":"Eau de Toilette"},{"id":"p23","brand":"Kilian","name":"Straight to Heaven White Cristal","ml":7.5,"price":2016,"kind":"mini","source":"Prom · reference","buy":"https://prom.ua/ua/m85822416086685271-original-kilian-straight.html","image":"https://u-mercari-images.mercdn.net/photos/m71856791518_2.jpg?_=1758303049&quality=75&width=2560","description":"Woody, rum-soaked and sophisticated, with a touch of patchouli.","photo_source":"https://www.mercari.com/us/item/m71856791518/","note":"7.5 ml assumed official travel miniature.","type":"Eau de Parfum"},{"id":"p24","brand":"Montblanc","name":"Explorer","ml":60,"price":2006,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/mont-blanc-explorer-parfyumirovannaya-voda/","image":"https://media.douglas.lv/images/galleries/1747392937_422.jpg","description":"Fresh bergamot, vetiver and patchouli in a versatile woody style.","photo_source":"https://www.douglas.lv/lv/katalogs/montblanc-explorer/","note":"","images":["https://media.douglas.lv/images/galleries/1747392937_422.jpg","https://i.ebayimg.com/images/g/qkUAAOSwgYFgrPS9/s-l640.jpg","https://www.dischem.co.za/api/catalog/product/3/3/3386460101042_front.jpg?image-type=image&store=default"],"type":"Eau de Parfum"},{"id":"p25","brand":"Calvin Klein","name":"CK One Shock for Him","ml":200,"price":1952,"kind":"bottle","source":"LUXE","buy":"https://luxenichestore.com/ua/products/calvin-klein-ck-one-shock-for-him","image":"https://www.perfumenz.co.nz/cdn/shop/products/ck_one_shock_200ml_1200x1200.jpg?v=1524970461","description":"A playful spicy-tobacco take on the familiar CK One DNA.","photo_source":"https://www.perfumenz.co.nz/products/one-shock-for-him-by-calvin-klein-200ml-edt","note":"","type":"Eau de Toilette"},{"id":"p26","brand":"Moschino","name":"Toy Boy","ml":50,"price":1876,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/moschino-toy-boy-parfyumirovannaya-voda/","image":"https://www.perfumenz.co.nz/cdn/shop/products/moschino-toy-boy-50ml_1024x1024.png?v=1658978848","description":"A bold spicy rose fragrance inside the playful black teddy-bear bottle.","photo_source":"https://www.perfumenz.co.nz/products/toy-boy-by-moschino-50ml-edp-for-men","note":"","type":"Eau de Parfum"},{"id":"p27","brand":"Marc-Antoine Barrois","name":"B683 EDP","ml":10,"price":1858,"kind":"mini","source":"MyOriginal · reference","buy":"https://www.perfumenichebar.com.ua/product/marc-antoine-barrois-b683/","image":"https://www.thescentroom.com/cdn/shop/products/b683100ml_1200x1200.jpg?v=1663719726","description":"An elegant, modern composition built around spicy, leathery and woody nuances.","photo_source":"https://www.thescentroom.com/products/b683-marc-antoine-barrois","note":"Official 10 ml mini assumed; photograph shows full-size bottle.","type":"Eau de Parfum"},{"id":"p28","brand":"Pepe Jeans","name":"Addictive Indulgence for Him","ml":100,"price":1677,"kind":"bottle","source":"Beautis","buy":"https://beautis.com.ua/ua/pepe-jeans-addictive-indulgence-for-him/","image":"https://beautis.com.ua/wa-data/public/shop/products/72/65/16572/images/63557/63557.2000.jpg","description":"A dessert-like gourmand direction in a deep chocolate-coloured bottle.","photo_source":"https://beautis.com.ua/pepe-jeans-addictive-indulgence-for-him/","note":"","type":"Eau de Parfum"},{"id":"p29","brand":"John Varvatos","name":"Artisan Pure","ml":75,"price":1581,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/john-varvatos-artisan-pure-tualetnaya-voda/","image":"https://www.perfumenz.co.nz/cdn/shop/products/varvatos-artisan-pure-75ml_700x700.png?v=1577142781","description":"Sunlit citrus and green herbal notes in a handwoven-look flacon.","photo_source":"https://www.perfumenz.co.nz/products/artisan-pure-by-john-varvatos-75ml-edt","note":"","type":"Eau de Toilette"},{"id":"p30","brand":"Marc-Antoine Barrois","name":"Ganymede EDP","ml":10,"price":1534,"kind":"mini","source":"MyOriginal · reference","buy":"https://www.perfumenichebar.com.ua/product/marc-antoine-barrois-ganymede/","image":"https://theparfums.com/cdn/shop/files/product-bottles-MARC-ANTOINE-GANYMEDE_7c6a3f95-e371-4c65-9d22-9be5b3eed47f.png?v=1762201795&width=1445","description":"Airy mineral notes, suede-like elegance and clean modern woods.","photo_source":"https://theparfums.com/products/ganymede","note":"Official 10 ml mini assumed; photograph shows full-size bottle.","type":"Eau de Parfum"},{"id":"p31","brand":"Dior","name":"Tobacolor","ml":7.5,"price":1500,"kind":"mini","source":"Shafa · reference","buy":"https://shafa.ua/uk/christian-dior-miniatyury.xhtml","image":"https://www.almaycasa.com/cdn/shop/files/DIOR_Tobacolor_200ml_Eau_de_Parfum_Tester_01.png?v=1778136381&width=1080","description":"Sweet tobacco, honeyed warmth and smoky fruity notes.","photo_source":"https://www.almaycasa.com/products/dior-tobacolor-edp","note":"Official 7.5 ml mini assumed; picture depicts full-size perfume bottle.","type":"Eau de Parfum"},{"id":"p32","brand":"Dior","name":"New Look","ml":7.5,"price":1499,"kind":"mini","source":"Shafa · reference","buy":"https://shafa.ua/uk/christian-dior-miniatyury.xhtml","image":"https://theperfumeclub.pk/cdn/shop/files/Dior_New_Look_7.5ml_Miniature.png?v=1775744237","description":"Cool, abstract and elegant; a distinctive incense-led modern creation.","photo_source":"https://theperfumeclub.pk/products/dior-new-look-7-5ml-miniature","note":"Official 7.5 ml mini assumed; picture depicts full-size perfume bottle.","images":["https://theperfumeclub.pk/cdn/shop/files/Dior_New_Look_7.5ml_Miniature.png?v=1775744237","https://shop-beauty.dior.co.za/cdn/shop/files/Y0997153_C099800167_E01_GHC_1024x1024%402x.jpg?v=1741086697"],"type":"Eau de Parfum"},{"id":"p33","brand":"Calvin Klein","name":"CK One","ml":200,"price":1418,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/ck-one-tualetnaya-voda/","image":"https://parfumstaaltjes.be/cdn/shop/files/Parfum-Staaltjes-Fles-Verpakking_Calvin_Klein_Ck_One.webp?v=1737726982&width=1946","description":"A clean, understated citrus, tea and musk classic.","photo_source":"https://parfumstaaltjes.be/en/products/calvin-klein-ck-one-eau-de-toilette-voor-dames-en-heren","note":"","type":"Eau de Toilette"},{"id":"p34","brand":"Jo Malone London","name":"Myrrh & Tonka Cologne Intense","ml":9,"price":1237,"kind":"mini","source":"EDP.ua · reference","buy":"https://edp.ua/ua/jo-malone-myrrh-and-tonka-odekolon-mini-9-ml.html","image":"https://theparentcompany.my/cdn/shop/files/JoMaloneMyrrgh_TonkaCologne9ML.png?v=1748279090&width=1946","description":"Velvety myrrh and gently sweet tonka, refined and enveloping.","photo_source":"https://theparentcompany.my/products/jo-malone-myrrgh-tonka-cologne-intense-9-ml","note":"9 ml official mini assumed.","type":"Cologne Intense"},{"id":"p35","brand":"Montblanc","name":"Legend Spirit","ml":30,"price":1139,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/legend-spirit-tualetnaya-voda/","image":"https://amobeleza.vtexassets.com/arquivos/ids/336568/1307-2-jpg.jpg?v=639117957766800000","description":"A light, breezy fresh-aquatic everyday fragrance.","photo_source":"https://www.amobeleza.com.br/perfume-montblanc-legend-spirit-masculino-eau-de-toilette-30ml/p","note":"","type":"Eau de Toilette"},{"id":"p36","brand":"Kilian","name":"Black Phantom","ml":7.5,"price":1106,"kind":"mini","source":"BrandPerfumes · reference","buy":"https://bp.ua/perfumes/men-perfumes/kilian-black-phantom-edp-7-5-ml-mini-spray-u-3519432","image":"https://static.wixstatic.com/media/b89c19_d009c07759c642c6a5ba5fd3911099fc~mv2.jpeg/v1/fill/w_781%2Ch_865%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/b89c19_d009c07759c642c6a5ba5fd3911099fc~mv2.jpeg","description":"Dark coffee, rum and caramel in a famously rich gourmand style.","photo_source":"https://www.fragranceaddicts.shop/product-page/kilian-black-phantom-miniature-7-5ml","note":"Official travel size assumed.","type":"Eau de Parfum"},{"id":"p37","brand":"Chanel","name":"Bleu de Chanel EDP","ml":10,"price":899,"kind":"mini","source":"Shafa · reference","buy":"https://shafa.ua/uk/cosmetics/parfyumeriya/parfyumirovannaya-voda/211175066-originalna-miniatyura-bleu-de-chanel-eau-de-parfum-10-ml","image":"https://pub-ab691fbaed0c45758c04bf52cbdb688c.r2.dev/12644/0_b0d72fe8ea7e.png","description":"Crisp citrus and aromatic woods with a classic polished drydown.","photo_source":"https://scentsignal.app/fragrance/chanel/chanel-bleu-de-chanel-eau-de-parfum","note":"Official 10 ml miniature assumed; the picture shows the standard bottle.","type":"Eau de Parfum"},{"id":"p38","brand":"Lalique","name":"Encre Noire Sport","ml":50,"price":825,"kind":"bottle","source":"LaGrande","buy":"https://lagrande.com.ua/ua/encre-noire-pour-homme-sport-tualetnaya-voda/","image":"https://www.passionbeaute.fr/pub/media/catalog/product/l/a/lalique_7640111500896_v1.jpg","description":"Earthy vetiver, citrus and cypress with a lighter, fresher edge.","photo_source":"https://www.passionbeaute.fr/encre-noire-sport-521-18-57-ens.html","note":"","images":["https://www.passionbeaute.fr/pub/media/catalog/product/l/a/lalique_7640111500896_v1.jpg","https://shop.simon.com/cdn/shop/files/1635293a0049493b918634065a16276b_d850cab5-8e5a-422f-9554-8a4ad68678a6.jpg","https://swedishface.com/image/cache/data/parfym/lalique-encre-noire-sport-edt-50ml-900x900.jpg"],"type":"Eau de Toilette"},{"id":"p39","brand":"Jeanne Arthes","name":"J.S. Magnetic Power Navy Blue","ml":100,"price":899,"kind":"bottle","source":"EVA.ua · listed price (out of stock)","buy":"https://eva.ua/ua/pr31467/","image":"https://cdn.riah.ae/storage/upload/images/2024/08/08/66b4a92bc24c7.jpg","description":"Lemon and aquatic mint over aromatic herbs, cypress, soft sandalwood and clean musk. This is the white bottle with navy lettering.","photo_source":"https://www.riah.ae/en/product/ra-14630/js-navy-blue-eau-de-toilette-for-men","note":"White-and-navy bottle correctly identified as Navy Blue. EVA lists this variant as discontinued; its price is only a reference.","images":["https://cdn.riah.ae/storage/upload/images/2024/08/08/66b4a92bc24c7.jpg","https://media.falabella.com/falabellaCO/72795119_1/w%3D1500%2Ch%3D1500%2Cfit%3Dcover","https://drehi.bg/dist/img/bg/notino/jeanne-arthes-j.s.-magnetic-power-toaletna-voda-za-muzhe-100-ml.-3z75tqiet1.jpg"],"type":"Eau de Toilette"},{"id":"p40","brand":"Bi-Es","name":"Winner","ml":100,"price":429,"kind":"bottle","source":"Аврора · reference","buy":"https://avrora.ua/voda-tualetna-cholovicha-bi-es-winner-100-ml/","image":"https://images.avrora.ua/images/detailed/130/115531_2.jpg","description":"A sporty, affordable fresh fragrance with a woody backbone.","photo_source":"https://avrora.ua/voda-tualetna-cholovicha-bi-es-winner-100-ml/","note":"","images":["https://images.avrora.ua/images/detailed/130/115531_2.jpg","https://prod.cdn.plein.nl/producten/1000x1000/1073371.jpg","https://i.makeup.uk/n/nh/nhrrq4i8fhzy.jpg"],"type":"Eau de Toilette"},{"id":"p41","brand":"Al-Rehab","name":"Black Horse","ml":6,"price":220,"kind":"bottle","source":"Makeup.ua","buy":"https://makeup.com.ua/ua/product/784548/","image":"https://alaqsaislamicshop.co.uk/cdn/shop/files/rn-image_picker_lib_temp_3b8b8d33-195a-4774-9889-fc211ded2443.png?v=1777890145&width=1080","description":"A compact concentrated perfume oil in an original branded roll-on.","photo_source":"https://alaqsaislamicshop.co.uk/products/black-horse-6ml-perfume-oil","note":"","type":"Concentrated Perfume Oil"},{"id":"p42","brand":"Al-Rehab","name":"Champion","ml":6,"price":150,"kind":"bottle","source":"Al-Rehab · reference","buy":"https://www.intenseoud.com/products/champion-black-6ml-perfume-oil-by-al-rehab","image":"https://glametory.com/public/uploads/product/1775728810-al-rehab-champion-black-attar-6ml-%281%29.webp","description":"A small-format concentrated perfume oil in branded packaging.","photo_source":"https://glametory.com/product/al-rehab-champion-black-attar-6ml-1680","note":"The photo and shop link show Champion Black; please confirm if yours is that version.","type":"Concentrated Perfume Oil"}];
+  const money = n => '₴' + Number(n).toLocaleString('en-US',{maximumFractionDigits:0});
+  const qty = n => Number(n).toLocaleString('en-US',{maximumFractionDigits:1});
+  const escapeText = text => String(text??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safeUrl = u => {try{const p = new URL(u);return ['https:','http:'].includes(p.protocol)?p.href:'#'}catch{return '#'}};
+  const badges = {bottle:'Official bottle',mini:'Official miniature',tester:'Tester bottle'};
+  // Each product may have multiple photo URLs. Failed URLs are skipped globally.
+  // Only show the designed placeholder if *every* available URL fails.
+  const photoById = new Map(perfumes.map(p=>[p.id,p]));
+  const failedPhotoUrls = new Set();
+  const lastWorkingUrl = new Map();
+  const photoCandidates = p => {
+    const all=[...(p.images||[]),p.image].filter(Boolean).map(safeUrl).filter(u=>u!=='#');
+    return [...new Set(all)];
+  };
+  const initialPhoto = p => lastWorkingUrl.get(p.id) || photoCandidates(p).find(u=>!failedPhotoUrls.has(u)) || '';
+  // Start image timeouts only when a lazy image is near the viewport.
+  // In particular, avoid waiting indefinitely for an Encre Noire Sport image source.
+  const photoTimeouts = new WeakMap();
+  const visiblePhotos = new WeakSet();
+  function clearPhotoTimer(img){
+    const handle=photoTimeouts.get(img);
+    if(handle)clearTimeout(handle);
+    photoTimeouts.delete(img);
+  }
+  function armPhotoTimer(img){
+    clearPhotoTimer(img);
+    if(!img.isConnected || (img.complete && img.naturalWidth))return;
+    photoTimeouts.set(img,setTimeout(()=>{
+      if(img.isConnected && !img.naturalWidth)img.dispatchEvent(new Event('error'));
+    },img.dataset.photo==='p38'?4000:8500));
+  }
+  const photoObserver=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting)continue;
+      visiblePhotos.add(entry.target);
+      armPhotoTimer(entry.target);
+      photoObserver.unobserve(entry.target);
+    }
+  },{rootMargin:'450px'});
+  const search = document.getElementById('search'),kindFilter=document.getElementById('kindFilter'),sort=document.getElementById('sort'),root=document.getElementById('collection');
+  const filterPanel=document.getElementById('filterPanel'),filterContent=document.getElementById('filterContent'),filterToggle=document.getElementById('filterToggle');
+  function setFilterExpanded(expanded,save=true){
+    filterPanel.classList.toggle('is-collapsed',!expanded);
+    filterPanel.closest('.toolbar').classList.toggle('is-compact',!expanded);
+    filterContent.hidden=!expanded;
+    filterToggle.setAttribute('aria-expanded',String(expanded));
+    document.getElementById('filterToggleLabel').textContent=expanded?'Hide filters':'Show filters';
+    filterToggle.title=expanded?'Collapse filter section':'Expand filter section';
+    if(save)try{localStorage.setItem('fragranceArchiveFiltersExpanded',String(expanded))}catch{}
+  }
+  filterToggle.addEventListener('click',()=>setFilterExpanded(filterContent.hidden));
+  let filtersExpanded=false;
+  try{filtersExpanded=localStorage.getItem('fragranceArchiveFiltersExpanded')==='true'}catch{}
+  setFilterExpanded(filtersExpanded,false);
+  document.getElementById('statCount').textContent = perfumes.length;
+  document.getElementById('statVolume').textContent = qty(perfumes.reduce((n,p)=>n+p.ml,0))+' ml';
+  document.getElementById('statValue').textContent = money(perfumes.reduce((n,p)=>n+p.price,0));
+  document.getElementById('statMini').textContent = perfumes.filter(p=>p.kind==='mini').length;
+  for(const chip of document.querySelectorAll('button[data-kind]')){
+    const count=chip.dataset.kind==='all'?perfumes.length:perfumes.filter(p=>p.kind===chip.dataset.kind).length;
+    chip.querySelector('.chip-count').textContent=count;
+  }
+  function render(){
+    const q=search.value.trim().toLocaleLowerCase();
+    const filtered=perfumes.filter(p=>(kindFilter.value==='all'||kindFilter.value===p.kind)&&[p.brand,p.name,p.type,p.description].some(v=>v.toLocaleLowerCase().includes(q)));
+    filtered.sort((a,b)=>({priceDesc:()=>b.price-a.price,priceAsc:()=>a.price-b.price,name:()=>`${a.brand} ${a.name}`.localeCompare(`${b.brand} ${b.name}`),sizeDesc:()=>b.ml-a.ml,unitDesc:()=>b.price/b.ml-a.price/a.ml}[sort.value]())||a.name.localeCompare(b.name));
+    document.getElementById('countText').textContent=`${filtered.length} of ${perfumes.length} fragrances`;
+    const presentation={all:'All presentations',bottle:'Official bottles',mini:'Official miniatures',tester:'Tester bottles'}[kindFilter.value]||'All presentations';
+    document.getElementById('filterCompactInfo').textContent=`${filtered.length} shown · ${presentation}`;
+    if(!filtered.length){root.innerHTML='<div class="nothing"><strong>No matching fragrances</strong>Try another name or change the bottle filter.</div>';return}
+    root.innerHTML=filtered.map(p=>{
+      const extra=p.note?`<div class="note">${escapeText(p.note)}</div>`:'';
+      return `<article class="card"><div class="cover ${initialPhoto(p)?'':'photo-broken'}" data-id="${p.id}" tabindex="0" role="button" aria-label="Enlarge photo of ${escapeText(p.brand+' '+p.name)}"><span class="kind ${p.kind}">${badges[p.kind]}</span><span class="zoom-icon" aria-hidden="true">⌕ Enlarge</span><img src="${escapeText(initialPhoto(p))}" data-photo="${p.id}" data-photo-url="${escapeText(initialPhoto(p))}" loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="${escapeText(p.brand+' '+p.name+' perfume bottle')}"><div class="image-fallback"><span>✦</span><small>Photo unavailable</small></div></div><div class="body"><div class="house">${escapeText(p.brand)}</div><h3 class="name">${escapeText(p.name)}</h3><div class="concentration">${escapeText(p.type)}</div><div class="facts"><div class="volume">${qty(p.ml)} ml</div><div><div class="price">${money(p.price)}</div><div class="pricehint">≈ ${money(Math.round(p.price/p.ml))}/ml</div>${p.liveChecked?'<div class="price-live">✓ VERIFIED ONLINE</div>':''}</div></div><div class="body-actions"><a class="buy" href="${escapeText(safeUrl(p.buy))}" target="_blank" rel="noopener noreferrer" aria-label="Where to buy ${escapeText(p.brand+' '+p.name)}">Where to buy ↗</a><button class="details-btn" type="button" aria-expanded="false" aria-controls="details-${p.id}" data-details="${p.id}">Details +</button></div></div><div class="details" id="details-${p.id}" hidden><p>${escapeText(p.description)}</p><dl class="meta"><dt>Concentration</dt><dd>${escapeText(p.type)}</dd><dt>Presentation</dt><dd>${badges[p.kind]}</dd><dt>Bottle size</dt><dd>${qty(p.ml)} ml</dd><dt>Price / ml</dt><dd>${money(Math.round(p.price/p.ml))}</dd><dt>Price source</dt><dd>${escapeText(p.source)}</dd><dt>Shop page</dt><dd><a href="${escapeText(safeUrl(p.buy))}" target="_blank" rel="noopener noreferrer">Visit retailer ↗</a></dd><dt>Photo credit</dt><dd><a href="${escapeText(safeUrl(p.photo_source||p.buy))}" target="_blank" rel="noopener noreferrer">View photo source ↗</a></dd></dl>${extra}</div></article>`
+    }).join('');
+    root.querySelectorAll('img[data-photo]').forEach(img=>photoObserver.observe(img));
+  }
+  root.addEventListener('load', event => {
+    const el=event.target;
+    if (!el.matches?.('img[data-photo]')) return;
+    clearPhotoTimer(el);
+    lastWorkingUrl.set(el.dataset.photo,el.src);
+    el.closest('.cover')?.classList.remove('photo-broken');
+  }, true);
+  root.addEventListener('error', event => {
+    const el=event.target;
+    if (!el.matches?.('img[data-photo]')) return;
+    clearPhotoTimer(el);
+    const p=photoById.get(el.dataset.photo);
+    if(!p)return;
+    failedPhotoUrls.add(el.src);
+    if(lastWorkingUrl.get(p.id)===el.src)lastWorkingUrl.delete(p.id);
+    const next=photoCandidates(p).find(u=>!failedPhotoUrls.has(u));
+    if(next){el.src=next;if(visiblePhotos.has(el))armPhotoTimer(el);return;}
+    el.closest('.cover')?.classList.add('photo-broken');
+  }, true);
+  const presentationButtons = document.querySelectorAll('button[data-kind]');
+  function setPresentation(kind){
+    kindFilter.value=kind;
+    for(const b of presentationButtons){
+      const active=b.dataset.kind===kind;
+      b.classList.toggle('active',active);
+      b.setAttribute('aria-pressed',String(active));
+    }
+    render();
+  }
+  for(const b of presentationButtons)b.addEventListener('click',()=>setPresentation(b.dataset.kind));
+  root.addEventListener('click',e=>{const button=e.target.closest('button[data-details]');if(!button)return;const target=document.getElementById('details-'+button.dataset.details);const expanded=button.getAttribute('aria-expanded')==='true';target.hidden=expanded;button.setAttribute('aria-expanded',String(!expanded));button.textContent=expanded?'Details +':'Details −';});
+  [search,kindFilter,sort].forEach(x=>x.addEventListener(x===search?'input':'change',render));
+  const gridBtn=document.getElementById('gridBtn'), listBtn=document.getElementById('listBtn');
+  function view(mode){root.classList.toggle('list',mode==='list');gridBtn.classList.toggle('active',mode==='grid');listBtn.classList.toggle('active',mode==='list');gridBtn.setAttribute('aria-pressed',String(mode==='grid'));listBtn.setAttribute('aria-pressed',String(mode==='list'));try{localStorage.setItem('fragranceArchiveView',mode)}catch{}}
+  gridBtn.onclick=()=>view('grid');listBtn.onclick=()=>view('list');
+  try{view(localStorage.getItem('fragranceArchiveView')==='list'?'list':'grid')}catch{view('grid')}
+  render();
+
+  // Photo lightbox: uses the successfully loaded image from the card, not the first (possibly blocked) URL.
+  const photoModal=document.getElementById('photoModal');
+  const photoModalImage=document.getElementById('photoModalImg');
+  const closeModalButton=document.getElementById('photoModalClose');
+  let modalRestoreFocus=null;
+  function openPhoto(cover){
+    if(!cover || cover.classList.contains('photo-broken')) return;
+    const p=photoById.get(cover.dataset.id);
+    const img=cover.querySelector('img[data-photo]');
+    if(!p||!img||!img.complete||!img.naturalWidth) return;
+    modalRestoreFocus=document.activeElement;
+    document.getElementById('photoModalTitle').textContent=p.brand+' · '+p.name;
+    document.getElementById('photoModalSub').textContent=p.type+' · '+qty(p.ml)+' ml';
+    photoModalImage.src=img.currentSrc||img.src;
+    photoModalImage.alt=p.brand+' '+p.name+' — larger bottle photo';
+    document.getElementById('photoModalSource').href=safeUrl(p.photo_source||p.buy);
+    photoModal.hidden=false;
+    document.body.style.overflow='hidden';
+    closeModalButton.focus();
+  }
+  function closePhoto(){
+    if(photoModal.hidden)return;
+    photoModal.hidden=true;
+    document.body.style.overflow='';
+    photoModalImage.removeAttribute('src');
+    modalRestoreFocus?.focus?.();
+  }
+  root.addEventListener('click',e=>{
+    const cover=e.target.closest('.cover[data-id]');
+    if(cover)openPhoto(cover);
+  });
+  root.addEventListener('keydown',e=>{
+    const cover=e.target.closest('.cover[data-id]');
+    if(cover && (e.key==='Enter'||e.key===' ')){
+      e.preventDefault();openPhoto(cover);
+    }
+  });
+  closeModalButton.addEventListener('click',closePhoto);
+  photoModal.addEventListener('click',e=>{if(e.target===photoModal)closePhoto()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closePhoto()});
+
+  // Live price lookup must be performed by the optional local server: remote shops block
+  // browsers from reading price data directly (CORS). Offline HTML always keeps reference prices.
+  const priceStatus=document.getElementById('priceStatus');
+  const priceStatusBar=document.getElementById('priceStatusBar');
+  const refreshPrices=document.getElementById('refreshPrices');
+  const localPriceMode=['127.0.0.1','localhost'].includes(location.hostname)&&location.protocol==='http:';
+  const retailLookupTimeout=9500;
+  const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  let refreshInProgress=false;
+  let cancelled=false;
+  const setPriceStatus=(txt,mode)=>{
+    priceStatus.textContent=txt;
+    priceStatusBar.classList.toggle('checking',mode==='checking');
+    priceStatusBar.classList.toggle('current',mode==='current');
+  };
+  async function priceLookup(p,force){
+    const ctl=new AbortController();
+    const timeout=setTimeout(()=>ctl.abort(),retailLookupTimeout);
+    try{
+      const res=await fetch('/api/price?id='+encodeURIComponent(p.id)+(force?'&force=1':''), {cache:'no-store',signal:ctl.signal});
+      if(!res.ok)return false;
+      const result=await res.json();
+      if(result.status==='updated' && result.currency==='UAH' && Number.isFinite(result.price) && result.price>0){
+        p.price=result.price;
+        p.source=result.source;
+        p.liveChecked=true;
+        return true;
+      }
+      return false;
+    }catch{return false}finally{clearTimeout(timeout)}
+  }
+  async function refreshAllPrices(force=false){
+    if(refreshInProgress)return;
+    if(!localPriceMode){
+      setPriceStatus('Reference prices · launch the included Windows price server for live checks');return;
+    }
+    refreshInProgress=true;refreshPrices.disabled=true;
+    setPriceStatus('Checking retailer prices · 0/'+perfumes.length,'checking');
+    let finished=0,updated=0;
+    let currentIndex=0;
+    const worker=async()=>{
+      while(currentIndex<perfumes.length){
+        const p=perfumes[currentIndex++];
+        if(await priceLookup(p,force))updated++;
+        finished++;
+        setPriceStatus(`Checking retailer prices · ${finished}/${perfumes.length} · ${updated} verified`,'checking');
+      }
+    };
+    await Promise.all(Array.from({length:3},worker));
+    document.getElementById('statValue').textContent=money(perfumes.reduce((n,p)=>n+p.price,0));
+    render();
+    setPriceStatus(updated?`${updated} live prices verified · other prices remain references`:'Reference prices · no matching live prices verified',updated?'current':'');
+    refreshInProgress=false;refreshPrices.disabled=false;
+  }
+  refreshPrices.addEventListener('click',()=>refreshAllPrices(true));
+  if(localPriceMode)refreshAllPrices(false);
+  else setPriceStatus('Reference prices · open with the included launcher to check live prices');
+  </script>
+</body></html>
