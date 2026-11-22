@@ -3,121 +3,692 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Розклад ІП-61ф</title>
+<title>Розклад ІП-61ф (ФІОТ)</title>
 <style>
+    :root {
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --text: #111827;
+        --muted: #6b7280;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --live: #16a34a;
+        --live-bg: #f0fdf4;
+        --next: #d97706;
+        --next-bg: #fffbeb;
+        --border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-        font-family: Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         margin: 0;
-        background: #f4f6f8;
-        color: #1f2937;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.45;
     }
+
     .container {
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 0 20px;
+        max-width: 920px;
+        margin: 32px auto;
+        padding: 0 18px 48px;
     }
+
+    header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
     h1 {
-        margin-bottom: 8px;
+        margin: 0 0 4px;
+        font-size: 26px;
     }
+
     .subtitle {
-        color: #6b7280;
-        margin-bottom: 28px;
+        color: var(--muted);
+        font-size: 15px;
     }
-    .week {
-        background: white;
-        border-radius: 16px;
-        padding: 22px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+
+    .clock-box {
+        text-align: right;
+        background: var(--card);
+        padding: 10px 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     }
-    .week h2 {
-        margin-top: 0;
-    }
-    .lesson {
-        border-left: 5px solid #2563eb;
-        background: #f8fafc;
-        padding: 16px 18px;
-        margin: 14px 0;
-        border-radius: 10px;
-    }
-    .time {
+
+    .clock-time {
         font-size: 20px;
         font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .clock-date {
+        font-size: 13px;
+        color: var(--muted);
+        text-transform: capitalize;
+    }
+
+    /* Status Banner */
+    .status-banner {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 20px 22px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        border-left: 6px solid var(--primary);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .status-banner.is-live {
+        border-left-color: var(--live);
+        background: var(--live-bg);
+    }
+
+    .status-banner.is-next {
+        border-left-color: var(--next);
+        background: var(--next-bg);
+    }
+
+    .status-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--primary);
         margin-bottom: 6px;
     }
+
+    .is-live .status-label { color: var(--live); }
+    .is-next .status-label { color: var(--next); }
+
+    .pulse-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--live);
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
+        70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+
+    .status-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .status-meta {
+        font-size: 14px;
+        color: #374151;
+    }
+
+    /* Controls */
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .tabs {
+        display: inline-flex;
+        background: #e5e7eb;
+        padding: 4px;
+        border-radius: 10px;
+        gap: 4px;
+    }
+
+    .tab-btn {
+        border: none;
+        background: transparent;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+        transition: 0.15s;
+    }
+
+    .tab-btn.active {
+        background: var(--card);
+        color: var(--text);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .week-pill {
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    /* Week & Day Cards */
+    .week-card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+        border: 2px solid transparent;
+    }
+
+    .week-card.current-week {
+        border-color: #bfdbfe;
+    }
+
+    .week-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .week-header h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .badge {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .badge-current { background: #dbeafe; color: #1d4ed8; }
+    .badge-live { background: #dcfce7; color: #15803d; }
+    .badge-next { background: #fef3c7; color: #b45309; }
+    .badge-type-lec { background: #e0e7ff; color: #3730a3; }
+    .badge-type-prac { background: #fee2e2; color: #991b1b; }
+
+    .day-group {
+        margin-bottom: 20px;
+    }
+
+    .day-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .day-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .lesson {
+        border-left: 5px solid var(--primary);
+        background: #f8fafc;
+        padding: 15px 18px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        transition: transform 0.12s;
+    }
+
+    .lesson:last-child { margin-bottom: 0; }
+
+    .lesson.lesson-live {
+        border-left-color: var(--live);
+        background: var(--live-bg);
+    }
+
+    .lesson.lesson-next {
+        border-left-color: var(--next);
+        background: var(--next-bg);
+    }
+
+    .lesson-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+    }
+
+    .time {
+        font-size: 18px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .badges-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
     .subject {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 600;
         margin-bottom: 4px;
     }
+
     .teacher {
-        color: #6b7280;
+        color: var(--muted);
+        font-size: 14px;
         margin-bottom: 12px;
     }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+    }
+
     .btn {
         display: inline-block;
         text-decoration: none;
-        background: #2563eb;
+        background: var(--primary);
         color: white;
-        padding: 9px 14px;
+        padding: 8px 14px;
         border-radius: 8px;
         font-weight: 600;
+        font-size: 14px;
     }
-    .btn:hover {
-        background: #1d4ed8;
-    }
+
+    .btn:hover { background: var(--primary-hover); }
+    .lesson-live .btn { background: var(--live); }
+
     .zoom-info {
-        font-size: 13px;
-        color: #6b7280;
-        margin-top: 8px;
-        line-height: 1.5;
+        font-size: 12.5px;
+        color: var(--muted);
+        line-height: 1.4;
+    }
+
+    @media (max-width: 600px) {
+        .clock-box { text-align: left; width: 100%; }
     }
 </style>
 </head>
 <body>
 <div class="container">
-    <h1>Розклад ІП-61ф (ФІОТ)</h1>
-    <div class="subtitle">Аспірантура · четвер</div>
-
-    <section class="week">
-        <h2>1-й тиждень — 3 пари</h2>
-
-        <div class="lesson">
-            <div class="time">10:25–12:00</div>
-            <div class="subject">Іноземна мова для наукової діяльності. Частина 1. Наукові дослідження</div>
-            <div class="teacher">Діброва Валентина Анатоліївна</div>
-            <a class="btn" href="https://meet.google.com/bpg-zyxa-htw" target="_blank">Відкрити Google Meet</a>
+    <header>
+        <div>
+            <h1>Розклад ІП-61ф (ФІОТ)</h1>
+            <div class="subtitle">Аспірантура · Середа та Четвер · 2-тижневий цикл</div>
         </div>
-
-        <div class="lesson">
-            <div class="time">12:20–13:55</div>
-            <div class="subject">Іноземна мова для наукової діяльності. Частина 1. Наукові дослідження</div>
-            <div class="teacher">Діброва Валентина Анатоліївна</div>
-            <a class="btn" href="https://meet.google.com/bpg-zyxa-htw" target="_blank">Відкрити Google Meet</a>
+        <div class="clock-box">
+            <div class="clock-time" id="live-clock">--:--:--</div>
+            <div class="clock-date" id="live-date">Завантаження...</div>
         </div>
+    </header>
 
-        <div class="lesson">
-            <div class="time">14:15–15:50</div>
-            <div class="subject">Філософські засади наукової діяльності</div>
-            <div class="teacher">Кивлюк Ольга Петрівна</div>
-            <a class="btn" href="https://us05web.zoom.us/j/2148506018?pwd=JuQv1Pabfw7zFrcj6Rm4V8svMnDXOK.1" target="_blank">Відкрити Zoom</a>
-            <div class="zoom-info">
-                Meeting ID: 214 850 6018<br>
-                Код доступу: 11111
-            </div>
+    <div id="status-banner" class="status-banner"></div>
+
+    <div class="controls">
+        <div class="tabs" id="view-tabs">
+            <button class="tab-btn active" data-filter="all">Обидва тижні</button>
+            <button class="tab-btn" data-filter="1">1-й тиждень</button>
+            <button class="tab-btn" data-filter="2">2-й тиждень</button>
         </div>
-    </section>
+        <div class="week-pill" id="active-week-pill">Зараз: —</div>
+    </div>
 
-    <section class="week">
-        <h2>2-й тиждень — 1 пара</h2>
-
-        <div class="lesson">
-            <div class="time">10:25–12:00</div>
-            <div class="subject">Іноземна мова для наукової діяльності. Частина 1. Наукові дослідження</div>
-            <div class="teacher">Діброва Валентина Анатоліївна</div>
-            <a class="btn" href="https://meet.google.com/bpg-zyxa-htw" target="_blank">Відкрити Google Meet</a>
-        </div>
-    </section>
+    <main id="schedule-root"></main>
 </div>
+
+<script>
+    // Калібрування циклу: понеділок тижня 25–26 листопада 2026 = 1-й тиждень
+    const CYCLE_ANCHOR_MONDAY = new Date(2026, 10, 23, 0, 0, 0); // 23 лист 2026 (Понеділок)
+
+    const LINKS = {
+        sulema: {
+            label: "Відкрити Zoom",
+            url: "https://us02web.zoom.us/j/88086777696?pwd=24LEZfYlDeI9iqFC2jfYYWmuVwuV2p.1",
+            info: "Meeting ID: 880 8677 7696 · Див. посилання з паролем"
+        },
+        dibrova: {
+            label: "Відкрити Google Meet",
+            url: "https://meet.google.com/bpg-zyxa-htw",
+            info: "Google Meet"
+        },
+        kyvliuk: {
+            label: "Відкрити Zoom",
+            url: "https://us05web.zoom.us/j/2148506018?pwd=JuQv1Pabfw7zFrcj6Rm4V8svMnDXOK.1",
+            info: "Meeting ID: 214 850 6018 · Код доступу: 11111"
+        }
+    };
+
+    // dayOfWeek: 1 = Пн, 2 = Вт, 3 = Ср, 4 = Чт, 5 = Пт, 6 = Сб, 0 = Нд
+    const SCHEDULE = [
+        // 1-й тиждень
+        {
+            id: "w1-wed-1",
+            week: 1,
+            dayOfWeek: 3,
+            dayName: "Середа",
+            start: "12:20",
+            end: "13:55",
+            type: "Лекція",
+            kind: "lec",
+            subject: "Організація науково-інноваційної діяльності",
+            teacher: "Сулема Євгенія Станіславівна",
+            link: LINKS.sulema
+        },
+        {
+            id: "w1-wed-2",
+            week: 1,
+            dayOfWeek: 3,
+            dayName: "Середа",
+            start: "14:15",
+            end: "15:50",
+            type: "Практика",
+            kind: "prac",
+            subject: "Організація науково-інноваційної діяльності",
+            teacher: "Сулема Євгенія Станіславівна",
+            link: LINKS.sulema
+        },
+        {
+            id: "w1-thu-1",
+            week: 1,
+            dayOfWeek: 4,
+            dayName: "Четвер",
+            start: "08:30",
+            end: "10:05",
+            type: "Практика",
+            kind: "prac",
+            subject: "Філософські засади наукової діяльності",
+            teacher: "Кивлюк Ольга Петрівна",
+            link: LINKS.kyvliuk
+        },
+        {
+            id: "w1-thu-2",
+            week: 1,
+            dayOfWeek: 4,
+            dayName: "Четвер",
+            start: "10:25",
+            end: "12:00",
+            type: "Практика",
+            kind: "prac",
+            subject: "Іноземна мова для наукової діяльності. Частина 1. Наукові дослідження",
+            teacher: "Діброва Валентина Анатоліївна",
+            link: LINKS.dibrova
+        },
+        {
+            id: "w1-thu-3",
+            week: 1,
+            dayOfWeek: 4,
+            dayName: "Четвер",
+            start: "14:15",
+            end: "15:50",
+            type: "Лекція",
+            kind: "lec",
+            subject: "Філософські засади наукової діяльності",
+            teacher: "Кивлюк Ольга Петрівна",
+            link: LINKS.kyvliuk
+        },
+
+        // 2-й тиждень
+        {
+            id: "w2-wed-1",
+            week: 2,
+            dayOfWeek: 3,
+            dayName: "Середа",
+            start: "12:20",
+            end: "13:55",
+            type: "Лекція",
+            kind: "lec",
+            subject: "Організація науково-інноваційної діяльності",
+            teacher: "Сулема Євгенія Станіславівна",
+            link: LINKS.sulema
+        },
+        {
+            id: "w2-thu-1",
+            week: 2,
+            dayOfWeek: 4,
+            dayName: "Четвер",
+            start: "08:30",
+            end: "10:05",
+            type: "Практика",
+            kind: "prac",
+            subject: "Іноземна мова для наукової діяльності. Частина 1. Наукові дослідження",
+            teacher: "Діброва Валентина Анатоліївна",
+            link: LINKS.dibrova
+        },
+        {
+            id: "w2-thu-2",
+            week: 2,
+            dayOfWeek: 4,
+            dayName: "Четвер",
+            start: "10:25",
+            end: "12:00",
+            type: "Практика",
+            kind: "prac",
+            subject: "Іноземна мова для наукової діяльності. Частина 1. Наукові дослідження",
+            teacher: "Діброва Валентина Анатоліївна",
+            link: LINKS.dibrova
+        }
+    ];
+
+    let activeFilter = "all";
+
+    function getMonday(date) {
+        const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        d.setDate(diff);
+        return d;
+    }
+
+    function getCycleWeek(now) {
+        const currentMonday = getMonday(now);
+        const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+        const weeksDiff = Math.round((currentMonday - CYCLE_ANCHOR_MONDAY) / msPerWeek);
+        return (((weeksDiff % 2) + 2) % 2) + 1; // 1 або 2
+    }
+
+    function parseTimeOnDate(baseMonday, dayOfWeek, timeStr) {
+        const [h, m] = timeStr.split(":").map(Number);
+        const d = new Date(baseMonday);
+        d.setDate(baseMonday.getDate() + (dayOfWeek - 1));
+        d.setHours(h, m, 0, 0);
+        return d;
+    }
+
+    function formatCountdown(ms) {
+        if (ms <= 0) return "зараз";
+        const totalMin = Math.floor(ms / 60000);
+        const days = Math.floor(totalMin / (60 * 24));
+        const hours = Math.floor((totalMin % (60 * 24)) / 60);
+        const mins = totalMin % 60;
+
+        const parts = [];
+        if (days > 0) parts.push(`${days} дн.`);
+        if (hours > 0) parts.push(`${hours} год.`);
+        parts.push(`${mins} хв.`);
+        return parts.join(" ");
+    }
+
+    function findLiveAndNext(now) {
+        const currentMonday = getMonday(now);
+        const currentWeek = getCycleWeek(now);
+        const occurrences = [];
+
+        // Генеруємо пари на поточний, наступний та через-один тиждень
+        for (let offset = 0; offset < 3; offset++) {
+            const weekMonday = new Date(currentMonday);
+            weekMonday.setDate(currentMonday.getDate() + offset * 7);
+            const weekNum = (((currentWeek - 1 + offset) % 2) + 1);
+
+            SCHEDULE.filter(l => l.week === weekNum).forEach(lesson => {
+                const startDt = parseTimeOnDate(weekMonday, lesson.dayOfWeek, lesson.start);
+                const endDt = parseTimeOnDate(weekMonday, lesson.dayOfWeek, lesson.end);
+                occurrences.push({ lesson, startDt, endDt });
+            });
+        }
+
+        occurrences.sort((a, b) => a.startDt - b.startDt);
+
+        const live = occurrences.find(o => now >= o.startDt && now <= o.endDt) || null;
+        const next = occurrences.find(o => o.startDt > now) || null;
+
+        return { currentWeek, live, next };
+    }
+
+    function renderStatus(now, state) {
+        const banner = document.getElementById("status-banner");
+        const { currentWeek, live, next } = state;
+
+        if (live) {
+            const leftMin = Math.ceil((live.endDt - now) / 60000);
+            banner.className = "status-banner is-live";
+            banner.innerHTML = `
+                <div>
+                    <div class="status-label"><span class="pulse-dot"></span> Зараз іде пара (${currentWeek}-й тиждень)</div>
+                    <div class="status-title">${live.lesson.subject}</div>
+                    <div class="status-meta">${live.lesson.type} · ${live.lesson.start}–${live.lesson.end} (залишилось ${leftMin} хв.) · ${live.lesson.teacher}</div>
+                </div>
+                <a class="btn" href="${live.lesson.link.url}" target="_blank">${live.lesson.link.label}</a>
+            `;
+            return;
+        }
+
+        if (next) {
+            const isToday = next.startDt.toDateString() === now.toDateString();
+            const dayTag = isToday
+                ? `Сьогодні (${next.lesson.dayName})`
+                : `${next.lesson.dayName}, ${next.startDt.toLocaleDateString("uk-UA", { day: "numeric", month: "long" })}`;
+
+            banner.className = "status-banner is-next";
+            banner.innerHTML = `
+                <div>
+                    <div class="status-label">Наступна пара · ${next.lesson.week}-й тиждень</div>
+                    <div class="status-title">${next.lesson.subject}</div>
+                    <div class="status-meta">${dayTag} о <strong>${next.lesson.start}</strong> (через ${formatCountdown(next.startDt - now)}) · ${next.lesson.type}</div>
+                </div>
+                <a class="btn" href="${next.lesson.link.url}" target="_blank">${next.lesson.link.label}</a>
+            `;
+        }
+    }
+
+    function renderSchedule(state) {
+        const root = document.getElementById("schedule-root");
+        const { currentWeek, live, next } = state;
+        const weeksToShow = activeFilter === "all" ? [1, 2] : [Number(activeFilter)];
+
+        root.innerHTML = weeksToShow.map(weekNum => {
+            const lessons = SCHEDULE.filter(l => l.week === weekNum);
+            const isCurrentWeek = weekNum === currentWeek;
+
+            // Групування по днях (Середа -> Четвер)
+            const daysMap = new Map();
+            lessons.forEach(l => {
+                if (!daysMap.has(l.dayName)) daysMap.set(l.dayName, []);
+                daysMap.get(l.dayName).push(l);
+            });
+
+            const daysHtml = Array.from(daysMap.entries()).map(([dayName, dayLessons]) => {
+                const lessonsHtml = dayLessons.map(lesson => {
+                    const isLiveCard = live && live.lesson.id === lesson.id && isCurrentWeek;
+                    const isNextCard = !isLiveCard && next && next.lesson.id === lesson.id;
+
+                    let cardClass = "lesson";
+                    if (isLiveCard) cardClass += " lesson-live";
+                    else if (isNextCard) cardClass += " lesson-next";
+
+                    const typeBadge = lesson.kind === "lec"
+                        ? `<span class="badge badge-type-lec">${lesson.type}</span>`
+                        : `<span class="badge badge-type-prac">${lesson.type}</span>`;
+
+                    const stateBadge = isLiveCard
+                        ? `<span class="badge badge-live">ЗАРАЗ ІДЕ</span>`
+                        : (isNextCard ? `<span class="badge badge-next">НАСТУПНА</span>` : "");
+
+                    return `
+                        <div class="${cardClass}">
+                            <div class="lesson-top">
+                                <div class="time">${lesson.start}–${lesson.end}</div>
+                                <div class="badges-row">${stateBadge}${typeBadge}</div>
+                            </div>
+                            <div class="subject">${lesson.subject}</div>
+                            <div class="teacher">${lesson.teacher}</div>
+                            <div class="actions">
+                                <a class="btn" href="${lesson.link.url}" target="_blank">${lesson.link.label}</a>
+                                <span class="zoom-info">${lesson.link.info}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+
+                return `
+                    <div class="day-group">
+                        <div class="day-title">${dayName}</div>
+                        ${lessonsHtml}
+                    </div>
+                `;
+            }).join("");
+
+            return `
+                <section class="week-card ${isCurrentWeek ? "current-week" : ""}">
+                    <div class="week-header">
+                        <h2>${weekNum}-й тиждень — ${lessons.length} пар</h2>
+                        ${isCurrentWeek ? `<span class="badge badge-current">Поточний тиждень</span>` : ""}
+                    </div>
+                    ${daysHtml}
+                </section>
+            `;
+        }).join("");
+    }
+
+    function tick() {
+        const now = new Date();
+        document.getElementById("live-clock").textContent = now.toLocaleTimeString("uk-UA");
+        document.getElementById("live-date").textContent = now.toLocaleDateString("uk-UA", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+        const state = findLiveAndNext(now);
+        document.getElementById("active-week-pill").textContent = `Зараз: ${state.currentWeek}-й тиждень`;
+
+        renderStatus(now, state);
+        renderSchedule(state);
+    }
+
+    document.getElementById("view-tabs").addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if (!btn) return;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilter = btn.dataset.filter;
+        tick();
+    });
+
+    tick();
+    setInterval(tick, 1000);
+</script>
 </body>
 </html>
